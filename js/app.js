@@ -146,6 +146,14 @@ document.getElementById('song-map-content').addEventListener('click', e => {
   const card = e.target.closest('[data-sc-idx]');
   if (card) seekVideoTo(S.midiChordEvents[+card.dataset.scIdx]?.time);
 });
+document.getElementById('chord-timeline').addEventListener('click', e => {
+  const card = e.target.closest('[data-sc-idx]');
+  if (card) seekVideoTo(S.midiChordEvents[+card.dataset.scIdx]?.time);
+});
+document.getElementById('upcoming-chords').addEventListener('click', e => {
+  const card = e.target.closest('[data-sc-idx]');
+  if (card) seekVideoTo(S.midiChordEvents[+card.dataset.scIdx]?.time);
+});
 
 // ── Improv Tools ──
 document.getElementById('improv-toggle').addEventListener('click', () => {

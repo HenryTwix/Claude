@@ -52,11 +52,12 @@ export function updateUpcomingChords(currentIdx) {
     const chord = ev.chord;
     if (!chord) continue;
     const isNonDiatonic = ev.notePCs.some(pc => !diatonicSet.has(pc));
-    cards.push({ name: chord.name, isNonDiatonic });
+    cards.push({ name: chord.name, isNonDiatonic, idx: currentIdx + i });
   }
   container.innerHTML = cards.map((c, i) => `
     <div class="up-card ${c.isNonDiatonic ? 'up-nondiatonic' : 'up-diatonic'}"
-         style="font-size:${sizes[i]}px;opacity:${opacities[i]}">
+         data-sc-idx="${c.idx}"
+         style="font-size:${sizes[i]}px;opacity:${opacities[i]};cursor:pointer">
       ${c.name}
     </div>`
   ).join('');

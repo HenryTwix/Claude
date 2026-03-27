@@ -190,7 +190,8 @@ export function updateTimelinePanel() {
     const rn = getChordRomanNumeral(info.rootPc, suffix);
     const rnHtml = `<span style="font-size:10px;font-weight:700;color:${isNonDia?'#d97706':'#6366f1'};
       background:${isNonDia?'#1c1008':'#1e1b4b'};border-radius:4px;padding:1px 5px;letter-spacing:0.04em;">${rn}</span>`;
-    return `<div class="tl-card ${isCurrent?'tl-current':''} ${isNonDia?'tl-nondiatonic':''}" style="opacity:${opacities[i]}">
+    const idxAttr = !isCurrent && curIdx >= 0 ? ` data-sc-idx="${curIdx + i}"` : '';
+    return `<div class="tl-card ${isCurrent?'tl-current':''} ${isNonDia?'tl-nondiatonic':''}" style="opacity:${opacities[i]};${!isCurrent?'cursor:pointer':''}"${idxAttr}>
       <span class="tl-badge">NOW</span>
       <span class="tl-name" style="color:${isNonDia?(isCurrent?'#fbbf24':'#d97706'):''}">${info.name}</span>
       ${rnHtml}<div class="tl-nd-dot"></div>${svgHtml}</div>`;
