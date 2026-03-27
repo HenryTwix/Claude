@@ -179,6 +179,7 @@
   #approach-toggle.toggle-on { background: #1a1048 !important; border-color: #818cf8 !important; color: #a5b4fc !important; }
   #with-penta-toggle.toggle-on { background: #042f2e !important; border-color: #2dd4bf !important; color: #99f6e4 !important; }
   #improv-toggle.toggle-on   { background: #052e16 !important; border-color: #10b981 !important; color: #6ee7b7 !important; }
+  #improv-chord-toggle.toggle-on { background: #1e1b4b !important; border-color: #6366f1 !important; color: #a5b4fc !important; }
   #song-map-toggle.toggle-on { background: #1c1008 !important; border-color: #f59e0b !important; color: #fcd34d !important; }
 
   /* ── Video tabs ── */
