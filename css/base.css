@@ -1,0 +1,400 @@
+/* ═══════════════════════════════════════════════════
+   DESIGN OVERRIDE — Pro Studio Dark
+  ═══════════════════════════════════════════════════ */
+
+  :root {
+    --bg:          #090910;
+    --bg-card:     #0f0f18;
+    --bg-card-alt: #12121c;
+    --border:      #1c1c2e;
+    --border-mid:  #252538;
+    --accent-ind:  #6366f1;
+    --accent-ind2: #818cf8;
+    --accent-amb:  #d97706;
+    --accent-amb2: #f59e0b;
+    --text-hi:     #eeeef8;
+    --text-mid:    #9090aa;
+    --text-lo:     #666688;
+    --font-display:'Bebas Neue', cursive;
+    --font-ui:     'Rajdhani', sans-serif;
+    --font-mono:   'JetBrains Mono', monospace;
+    --radius-card: 16px;
+    --shadow-card: 0 2px 24px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.03) inset;
+  }
+
+  /* ── Global resets ── */
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    background: var(--bg) !important;
+    color: var(--text-hi) !important;
+    font-family: var(--font-ui) !important;
+    font-size: 15px;
+    background-image:
+      radial-gradient(ellipse 100% 40% at 50% 0%, rgba(99,102,241,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 30% at 80% 80%, rgba(217,119,6,0.03) 0%, transparent 60%);
+  }
+
+  /* ── Now Playing section accent ── */
+  section.cs-card:has(#chord-name-display) {
+    border-color: rgba(99,102,241,0.15) !important;
+    background: linear-gradient(135deg, #0f0f1a 0%, #0f0f18 100%) !important;
+  }
+
+  /* ── App title ── */
+  .app-title {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    letter-spacing: 0.12em;
+    color: var(--text-hi);
+    position: relative;
+  }
+  .app-title span { color: var(--accent-ind2); }
+  .app-title::after {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-ind), transparent);
+    margin: 4px auto 0;
+    border-radius: 2px;
+  }
+
+  /* ── Section cards ── */
+  .cs-card {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-card) !important;
+    box-shadow: var(--shadow-card) !important;
+    transition: border-color 0.2s;
+  }
+  .cs-card:focus-within { border-color: var(--border-mid) !important; }
+
+  /* ── Section headers ── */
+  .cs-h2 {
+    font-family: var(--font-ui) !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.2em !important;
+    text-transform: uppercase !important;
+    color: var(--text-lo) !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cs-h2::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 12px;
+    background: var(--accent-ind);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── Drop zones ── */
+  #drop-zone, #video-drop-zone {
+    border-color: var(--border-mid) !important;
+    background: rgba(99,102,241,0.03) !important;
+    transition: border-color 0.2s, background 0.2s !important;
+  }
+  #drop-zone:hover, #video-drop-zone:hover {
+    border-color: var(--accent-ind) !important;
+    background: rgba(99,102,241,0.07) !important;
+  }
+
+  /* ── Form inputs & selects ── */
+  input[type="text"],
+  input[type="range"],
+  select {
+    font-family: var(--font-ui) !important;
+  }
+  #yt-url {
+    background: #0c0c16 !important;
+    border-color: var(--border-mid) !important;
+    color: var(--text-hi) !important;
+    font-size: 14px !important;
+  }
+  #yt-url:focus { border-color: var(--accent-ind) !important; }
+  #yt-url::placeholder { color: var(--text-lo) !important; }
+
+  #yt-load {
+    font-family: var(--font-ui) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    background: linear-gradient(135deg, #4f46e5, #6366f1) !important;
+    border: 1px solid rgba(129,140,248,0.2) !important;
+    box-shadow: 0 2px 12px rgba(99,102,241,0.3) !important;
+  }
+  #yt-load:hover {
+    background: linear-gradient(135deg, #5b52f0, #6f74ff) !important;
+    box-shadow: 0 4px 16px rgba(99,102,241,0.5) !important;
+  }
+
+  /* ── Master Key selects ── */
+  #master-key-root, #master-key-mode {
+    background: #0c0c16 !important;
+    border-color: rgba(217,119,6,0.35) !important;
+    color: #fbbf24 !important;
+    font-family: var(--font-ui) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    padding: 6px 12px !important;
+  }
+  #master-key-root:focus, #master-key-mode:focus {
+    border-color: var(--accent-amb2) !important;
+    outline: none !important;
+  }
+
+  label[class*="text-xs"][class*="text-amber-400"] {
+    font-family: var(--font-ui) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.15em !important;
+  }
+
+  /* ── Toggle buttons (Controls Row 2) ── */
+  button[id$="-toggle"], #song-map-toggle {
+    font-family: var(--font-ui) !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    letter-spacing: 0.12em !important;
+    background: #0e0e18 !important;
+    border-color: var(--border-mid) !important;
+    color: var(--text-lo) !important;
+    transition: all 0.15s !important;
+    border-radius: 8px !important;
+  }
+  button[id$="-toggle"]:hover {
+    border-color: #3a3a55 !important;
+    color: var(--text-mid) !important;
+    background: #13131e !important;
+  }
+  /* ── Toggle active states ── */
+  #label-toggle.toggle-on    { background: #0c2d48 !important; border-color: #0ea5e9 !important; color: #7dd3fc !important; }
+  #penta-toggle.toggle-on    { background: #0a2e2a !important; border-color: #14b8a6 !important; color: #5eead4 !important; }
+  #chord-only-toggle.toggle-on { background: #1e0a3e !important; border-color: #8b5cf6 !important; color: #c4b5fd !important; }
+  #pre-nond-toggle.toggle-on { background: #2a0a1a !important; border-color: #f43f5e !important; color: #fda4af !important; }
+  #next-fb-toggle.toggle-on  { background: #1a1048 !important; border-color: #6366f1 !important; color: #a5b4fc !important; }
+  #gray-toggle.toggle-on     { background: #1f2937 !important; border-color: #9ca3af !important; color: #e5e7eb !important; }
+  #approach-toggle.toggle-on { background: #1a1048 !important; border-color: #818cf8 !important; color: #a5b4fc !important; }
+  #with-penta-toggle.toggle-on { background: #042f2e !important; border-color: #2dd4bf !important; color: #99f6e4 !important; }
+  #improv-toggle.toggle-on   { background: #052e16 !important; border-color: #10b981 !important; color: #6ee7b7 !important; }
+  #song-map-toggle.toggle-on { background: #1c1008 !important; border-color: #f59e0b !important; color: #fcd34d !important; }
+
+  /* ── Video tabs ── */
+  #tab-youtube, #tab-local {
+    font-family: var(--font-ui) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    font-size: 11px !important;
+  }
+  #tab-youtube { background: var(--accent-ind) !important; }
+
+  /* ── Improv tabs ── */
+  #improv-tab-timeline, #improv-tab-voicing,
+  #improv-tab-arpeggio, #improv-tab-both, #improv-tab-lick {
+    font-family: var(--font-ui) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    font-size: 11px !important;
+  }
+  #improv-tab-timeline { background: var(--accent-ind) !important; }
+
+  /* ── Now Playing section ── */
+  .now-playing-label {
+    font-family: var(--font-ui) !important;
+    font-size: 10px !important;
+    letter-spacing: 0.25em !important;
+    color: var(--text-lo) !important;
+    text-transform: uppercase !important;
+  }
+  #chord-name-display {
+    font-family: var(--font-display) !important;
+    font-size: 5rem !important;
+    letter-spacing: 0.06em !important;
+    color: var(--text-hi) !important;
+    line-height: 1 !important;
+    text-shadow: 0 0 40px rgba(99,102,241,0.15);
+  }
+  #sync-mode-label {
+    font-family: var(--font-ui) !important;
+    font-size: 10px !important;
+    letter-spacing: 0.2em !important;
+    color: var(--text-lo) !important;
+  }
+
+  /* ── Non-diatonic info banner ── */
+  #nondiatonic-info {
+    font-family: var(--font-ui) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    background: rgba(92,33,0,0.35) !important;
+    border-color: rgba(217,119,6,0.4) !important;
+    backdrop-filter: blur(4px);
+  }
+
+  /* ── Upcoming chord cards ── */
+  .up-card {
+    font-family: var(--font-display) !important;
+    letter-spacing: 0.06em !important;
+    border-radius: 8px !important;
+  }
+  .up-card .up-name { font-size: 1.2rem; }
+  .up-card .up-rn   { font-family: var(--font-ui) !important; font-size: 9px !important; opacity: 0.7; }
+
+  /* ── Timeline cards ── */
+  .tl-card {
+    background: #0e0e18 !important;
+    border-color: var(--border) !important;
+    border-radius: 12px !important;
+  }
+  .tl-card .tl-name {
+    font-family: var(--font-display) !important;
+    letter-spacing: 0.06em !important;
+  }
+  .tl-card.tl-current { border-color: var(--accent-ind) !important; background: #12122a !important; }
+  .tl-card.tl-current.tl-nondiatonic {
+    border-color: var(--accent-amb) !important;
+    background: #1a1206 !important;
+  }
+
+  /* ── Chord badge (manual mode) ── */
+  #chord-badge {
+    font-family: var(--font-display) !important;
+    font-size: 1rem !important;
+    letter-spacing: 0.1em !important;
+    background: #12122a !important;
+    border-color: rgba(99,102,241,0.3) !important;
+    color: var(--accent-ind2) !important;
+  }
+
+  /* ── History items ── */
+  .history-item {
+    background: #0e0e18 !important;
+    border-color: var(--border) !important;
+    border-radius: 10px !important;
+  }
+  .history-item:hover { border-color: var(--accent-ind) !important; background: #12122a !important; }
+  .history-midi { font-family: var(--font-ui) !important; font-weight: 700 !important; }
+  .history-video { font-family: var(--font-ui) !important; }
+  .history-key {
+    font-family: var(--font-display) !important;
+    letter-spacing: 0.08em !important;
+    font-size: 12px !important;
+    background: #12122a !important;
+    color: var(--accent-ind2) !important;
+  }
+
+  /* ── Voicing cards ── */
+  .voicing-card {
+    background: #0e0e18 !important;
+    border-color: var(--border) !important;
+    border-radius: 10px !important;
+  }
+  .voicing-card:hover { border-color: var(--accent-ind) !important; }
+  .voicing-card.voicing-selected {
+    border-color: var(--accent-ind) !important;
+    background: #12122a !important;
+  }
+  .voicing-label { font-family: var(--font-ui) !important; }
+
+  /* ── Arpeggio TAB ── */
+  .arp-tab {
+    font-family: var(--font-mono) !important;
+    background: #08080f !important;
+    border-color: var(--border) !important;
+    color: #6870a0 !important;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+    border-radius: 10px !important;
+  }
+
+  /* ── Song Map ── */
+  .sc-card { border-radius: 6px !important; }
+  .sc-card .sc-name { font-family: var(--font-ui) !important; font-weight: 800 !important; }
+  .sc-card .sc-rn   { font-family: var(--font-mono) !important; }
+  .sc-section-badge { font-family: var(--font-ui) !important; letter-spacing: 0.1em !important; }
+
+  /* ── Section dividers/border-b ── */
+  .border-b { border-color: var(--border) !important; }
+
+  /* ── Scrollbar styling ── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #303050; }
+
+  /* ── Diatonic preview text ── */
+  #diatonic-preview { font-family: var(--font-mono) !important; }
+
+  /* ── Sync offset value ── */
+  #sync-offset-val { font-family: var(--font-mono) !important; }
+
+  /* ── Chord tones info ── */
+  #chord-tones-info { font-family: var(--font-ui) !important; }
+  #chord-function-badge, .chord-function-badge {
+    font-family: var(--font-display) !important;
+    font-size: 14px !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  /* ── Scale suggestion ── */
+  .scale-suggestion { font-family: var(--font-ui) !important; }
+  .ss-item { font-family: var(--font-ui) !important; font-weight: 700 !important; }
+
+  /* ── Next chord label ── */
+  #next-chord-label {
+    font-family: var(--font-display) !important;
+    letter-spacing: 0.06em !important;
+    font-size: 1.3rem !important;
+  }
+
+  /* ── Improv section header ── */
+  #improv-tools h2 {
+    font-family: var(--font-ui) !important;
+    letter-spacing: 0.18em !important;
+  }
+
+  /* ── Arpeggio pattern nav buttons ── */
+  #arp-pattern-prev, #arp-pattern-next {
+    font-family: var(--font-ui) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    background: #0e0e18 !important;
+    border: 1px solid var(--border-mid) !important;
+    border-radius: 6px !important;
+    color: var(--text-mid) !important;
+    transition: all 0.15s !important;
+  }
+  #arp-pattern-prev:hover, #arp-pattern-next:hover {
+    border-color: var(--accent-ind) !important;
+    color: var(--accent-ind2) !important;
+  }
+  #arp-pattern-name {
+    font-family: var(--font-ui) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+  }
+
+  /* ── MIDI info body ── */
+  #midi-info-body { font-family: var(--font-ui) !important; }
+
+  /* ── Lick cards ── */
+  .lick-card {
+    background: #0e0e18 !important;
+    border-color: var(--border) !important;
+    border-radius: 10px !important;
+  }
+  .lick-card:hover { border-color: var(--border-mid) !important; }
+  .lick-name { font-family: var(--font-ui) !important; font-weight: 700 !important; }
+  .lick-style { font-family: var(--font-ui) !important; }
+  .lick-desc { font-family: var(--font-ui) !important; }
+
+  /* ── fnum (fret numbers) ── */
+  .fnum { font-family: var(--font-mono) !important; }
+
+  /* ── String labels ── */
+  .fb-slabel, .fb-str-label {
+    font-family: var(--font-mono) !important;
+    font-size: 9px !important;
+  }

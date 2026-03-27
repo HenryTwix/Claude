@@ -1,0 +1,229 @@
+    /* ── Fretboard — CSS Grid ──────────────────────────────────── */
+    /*
+     * Using CSS Grid instead of nested Flexbox.
+     * All cells are direct children of #fb-inner so the browser uses
+     * a single shared column-width calculation for every row —
+     * this eliminates the per-row flex-distribution drift that
+     * caused misalignment when the chord changed.
+     *
+     * grid-template-columns is set via inline style in buildFretboard().
+     * Layout: [label 28px] [nut 30px] [fret1…fret21 in fr units]
+     */
+    #fb-inner, #fb2-inner {
+      display: grid;
+      background: linear-gradient(180deg, #180d04 0%, #271608 45%, #180d04 100%);
+      border-radius: 10px;
+      padding: 6px 0 10px;
+      min-width: max-content;
+      user-select: none;
+    }
+
+    /* String-name label column */
+    .fb-slabel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: #6b7280;
+    }
+
+    /* ── Header row (fret numbers) ── */
+    .fb-hdr-open { height: 18px; }
+    .fb-hdr-cell {
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .fnum { font-size: 9px; color: #4b5563; }
+
+    /* ── String rows ── */
+    /* Open-string cell (before nut) */
+    .fb-str-open {
+      height: 44px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 5px solid #e2ca8a; /* nut */
+    }
+    /* Regular fret cell */
+    .fb-str-cell {
+      height: 44px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1.5px solid #5c4d2e; /* fret wire */
+    }
+    /* String line drawn via ::after on every string cell */
+    .fb-str-open::after,
+    .fb-str-cell::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: var(--sw, 1px);
+      background: var(--sc, #b09060);
+      pointer-events: none;
+    }
+    /* Label cell in a string row also carries the string line */
+    .fb-str-label {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: #6b7280;
+      position: relative;
+    }
+    .fb-str-label::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: var(--sw, 1px);
+      background: var(--sc, #b09060);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Inlay dot row ── */
+    .fb-inlay-open { height: 18px; }
+    .fb-inlay-cell {
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Note dots ── */
+    .ndot {
+      position: relative;
+      z-index: 2;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 9px;
+      font-weight: 800;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .ndot.root {
+      background: #dc2626;
+      color: #fff;
+      box-shadow: 0 0 10px #dc262688;
+    }
+    .ndot.root-nondiatonic {
+      background: #dc2626;
+      color: #fff;
+      box-shadow: 0 0 10px #dc262688;
+      outline: 2px solid #f59e0b;
+      outline-offset: 1px;
+    }
+    .ndot.tone {
+      background: #172554;
+      color: #93c5fd;
+      border: 1px solid #1d4ed840;
+    }
+    .ndot.penta {
+      background: #134e4a;
+      color: #5eead4;
+      border: 1px solid #0d9488aa;
+    }
+    /* 펜타토닉 힌트: 논-다이아토닉 코드에서 코드톤과 일치 → 강조 */
+    .ndot.penta-match {
+      background: #78350f;
+      color: #fde68a;
+      box-shadow: 0 0 10px #f59e0b99;
+      border: 1px solid #f59e0b80;
+    }
+    /* 펜타토닉 힌트: 코드톤과 반음 충돌 → 주의 */
+    .ndot.penta-avoid {
+      background: #111827;
+      color: #4b5563;
+      border: 1px solid #1f293760;
+    }
+    /* Pre-NonD: 다음 논-다이아토닉 코드에서 추가될 음 미리보기 */
+    .ndot.ghost {
+      background: #3d1f02;
+      color: #fbbf24;
+      border: 1px dashed #f59e0b;
+      opacity: 0.75;
+    }
+    /* Gray mode: 논-다이아토닉 외 모든 음을 단일 회색으로 */
+    .ndot.gray {
+      background: #1f2937;
+      color: #6b7280;
+      border: 1px solid #37415160;
+    }
+    .ndot.chord {
+      background: #14532d;
+      color: #86efac;
+      box-shadow: 0 0 10px #22c55a77;
+      border: 1px solid #22c55a60;
+    }
+    .ndot.nondiatonic {
+      background: #92400e;
+      color: #fde68a;
+      box-shadow: 0 0 12px #f59e0baa;
+      border: 1px solid #f59e0b80;
+    }
+
+    /* ── Side marker dots (bottom row) ── */
+    .idot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 38%, #f0e0a0, #b08030);
+      box-shadow: 0 1px 3px #00000090, inset 0 0 2px #ffffff30;
+    }
+    .idouble { display: flex; gap: 5px; }
+
+
+    /* ── WITH-PENTA Mode ── */
+    .ndot.wp-penta {
+      background: #0f766e;
+      color: #99f6e4;
+      box-shadow: 0 0 8px #14b8a666;
+      border: 1px solid #14b8a680;
+    }
+    .ndot.wp-scale {
+      background: #1e293b;
+      color: #64748b;
+      border: 1px solid #33415560;
+    }
+    .ndot.wp-nondiatonic {
+      background: #78350f;
+      color: #fde68a;
+      box-shadow: 0 0 10px #f59e0b88;
+      border: 1px solid #f59e0b80;
+    }
+    /* 펜타 음이지만 코드톤과 반음 충돌 → 주의 */
+    .ndot.wp-penta-avoid {
+      background: #1c1917;
+      color: #78716c;
+      border: 1px solid #44403c60;
+    }
+    /* 비-펜타 다이아토닉이 코드톤과 반음 충돌 → 더 어둡게 */
+    .ndot.wp-scale-avoid {
+      background: #18181b;
+      color: #52525b;
+      border: 1px solid #27272a60;
+    }
+
+    /* ── Approach Notes ── */
+    .ndot.approach {
+      background: #1e1b4b;
+      color: #818cf8;
+      border: 1px dashed #4f46e5;
+      opacity: 0.72;
+      font-size: 8px;
+    }

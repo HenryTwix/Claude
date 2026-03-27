@@ -1,0 +1,441 @@
+    /* ── Upcoming chord cards ── */
+    #upcoming-chords {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .up-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      padding: 5px 12px;
+      font-weight: 800;
+      line-height: 1.1;
+      border: 1px solid;
+      white-space: nowrap;
+      transition: opacity 0.3s;
+    }
+    .up-card.up-diatonic {
+      background: #111827;
+      border-color: #1f2937;
+      color: #6b7280;
+    }
+    .up-card.up-nondiatonic {
+      background: #1c1008;
+      border-color: #92400e80;
+      color: #d97706;
+    }
+
+    /* ── Sync pulse animation ── */
+    @keyframes syncPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .sync-active { animation: syncPulse 1.5s ease-in-out infinite; }
+
+    /* ── Chord Timeline ── */
+    .tl-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      border-radius: 14px;
+      border: 2px solid transparent;
+      padding: 16px 14px 12px;
+      background: #0f1117;
+      transition: opacity 0.25s, transform 0.25s, border-color 0.25s;
+      flex-shrink: 0;
+      cursor: default;
+    }
+    .tl-card.tl-current {
+      border-color: #4f46e5;
+      background: #13152b;
+      transform: scale(1.04);
+      box-shadow: 0 0 18px rgba(79,70,229,0.25);
+    }
+    .tl-card.tl-current.tl-nondiatonic {
+      border-color: #d97706;
+      background: #1a1205;
+      box-shadow: 0 0 18px rgba(217,119,6,0.25);
+    }
+    .tl-card .tl-badge {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #4f46e5;
+      padding: 2px 8px;
+      background: #1e1b4b;
+      border-radius: 99px;
+    }
+    .tl-card .tl-badge { visibility: hidden; }
+    .tl-card.tl-current .tl-badge { visibility: visible; }
+    .tl-card .tl-name {
+      font-size: 26px;
+      font-weight: 900;
+      color: #e5e7eb;
+      line-height: 1;
+    }
+    .tl-card.tl-current .tl-name { font-size: 32px; color: #fff; }
+    .tl-card .tl-nd-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #d97706;
+      margin-top: -2px;
+    }
+    .tl-card:not(.tl-nondiatonic) .tl-nd-dot { visibility: hidden; }
+
+    /* ── Chord Voicing Diagrams ── */
+    .voicing-card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      padding: 12px 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 130px;
+    }
+    .voicing-card .voicing-label {
+      font-size: 13px;
+      color: #6b7280;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .voicing-card:hover { border-color: #4f46e5; }
+    .voicing-card.voicing-selected {
+      border-color: #4f46e5;
+      background: #13152b;
+      box-shadow: 0 0 10px rgba(79,70,229,0.2);
+    }
+    .voicing-card.voicing-selected .voicing-label { color: #818cf8; }
+
+    /* ── Arpeggio TAB ── */
+    .arp-tab {
+      font-family: 'Courier New', monospace;
+      font-size: 15px;
+      line-height: 1.5;
+      color: #9ca3af;
+      background: #0f1117;
+      border: 1px solid #1f2937;
+      border-radius: 8px;
+      padding: 14px 20px;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .arp-tab .arp-highlight { color: #fbbf24; font-weight: bold; }
+    .arp-tab .arp-root { color: #f87171; font-weight: bold; }
+
+    /* ── Position Guide overlay on fretboard ── */
+    .pos-zone {
+      position: absolute;
+      top: 0; bottom: 0;
+      background: rgba(99, 102, 241, 0.08);
+      border-left: 2px solid rgba(99, 102, 241, 0.35);
+      border-right: 2px solid rgba(99, 102, 241, 0.35);
+      border-radius: 6px;
+      pointer-events: none;
+      transition: left 0.3s, width 0.3s;
+      z-index: 1;
+    }
+    .pos-zone-label {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 9px;
+      color: rgba(129, 140, 248, 0.7);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* ── History ── */
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .history-item:hover { border-color: #4f46e5; background: #161d2e; }
+    .history-item-main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .history-midi {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e5e7eb;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .history-video {
+      font-size: 11px;
+      color: #6b7280;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .history-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+    .history-key {
+      font-size: 10px;
+      font-weight: 700;
+      color: #818cf8;
+      background: #1e1b4b;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    .history-time {
+      font-size: 10px;
+      color: #4b5563;
+    }
+    .history-delete {
+      font-size: 18px;
+      color: #374151;
+      cursor: pointer;
+      padding: 2px 6px;
+      flex-shrink: 0;
+      border: none;
+      background: none;
+      line-height: 1;
+    }
+    .history-delete:hover { color: #ef4444; }
+
+    /* ── Song Map ── */
+    .sc-section-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .sc-section-label {
+      flex-shrink: 0;
+      width: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      padding-top: 8px;
+    }
+    .sc-section-badge {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+    .sc-badge-intro    { background:#1f2937; color:#9ca3af; border:1px solid #374151; }
+    .sc-badge-verse    { background:#1e1b4b; color:#a5b4fc; border:1px solid #3730a3; }
+    .sc-badge-prechorus{ background:#042f2e; color:#5eead4; border:1px solid #0d9488; }
+    .sc-badge-chorus   { background:#2e1065; color:#d8b4fe; border:1px solid #7c3aed; }
+    .sc-badge-bridge   { background:#1c1008; color:#fbbf24; border:1px solid #92400e; }
+    .sc-badge-outro    { background:#1f2937; color:#9ca3af; border:1px solid #374151; }
+    .sc-badge-other    { background:#111827; color:#6b7280; border:1px solid #1f2937; }
+    .sc-nd-hint {
+      font-size: 10px;
+      color: #92400e;
+      font-weight: 700;
+      text-align: right;
+    }
+    .sc-nd-hint.sc-nd-clean { color: #065f46; }
+    .sc-cards-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      flex: 1;
+      min-width: 0;
+    }
+    .sc-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 54px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+      gap: 2px;
+      user-select: none;
+    }
+    .sc-card:hover {
+      border-color: #4b5563;
+      transform: translateY(-1px);
+    }
+    .sc-card .sc-name {
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .sc-card .sc-rn {
+      font-size: 10px;
+      font-weight: 600;
+      opacity: 0.75;
+      white-space: nowrap;
+    }
+    /* Function-based card colors */
+    .sc-fn-I    { background:#1e1b4b; color:#a5b4fc; }
+    .sc-fn-ii   { background:#052e16; color:#86efac; }
+    .sc-fn-iii  { background:#042f2e; color:#5eead4; }
+    .sc-fn-IV   { background:#1c1a08; color:#fde68a; }
+    .sc-fn-V    { background:#450a0a; color:#fca5a5; }
+    .sc-fn-vi   { background:#2e1065; color:#d8b4fe; }
+    .sc-fn-vii  { background:#1f2937; color:#9ca3af; }
+    .sc-fn-nd   { background:#1c1008; color:#fbbf24; border-color:#78350f !important; }
+    .sc-fn-unknown { background:#111827; color:#6b7280; }
+    /* Active (now playing) */
+    @keyframes scPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
+      50%       { box-shadow: 0 0 8px 3px rgba(255,255,255,0.2); }
+    }
+    .sc-card.sc-active {
+      border-color: #ffffff !important;
+      box-shadow: 0 0 10px rgba(255,255,255,0.25);
+      transform: scale(1.08) translateY(-1px);
+      animation: scPulse 1.5s ease-in-out infinite;
+      z-index: 1;
+    }
+    /* Song map section divider line */
+    .sc-section-divider {
+      border: none;
+      border-top: 1px solid #1f2937;
+      margin: 6px 0;
+    }
+    /* Song map header stats */
+    .sc-stats {
+      display: flex;
+      gap: 14px;
+      font-size: 12px;
+      color: #4b5563;
+      flex-wrap: wrap;
+    }
+    .sc-stats span { color: #6b7280; }
+    .sc-stats strong { color: #9ca3af; }
+
+
+    /* ── Chord Function + Scale Suggestion ── */
+    .chord-function-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #a5b4fc;
+      background: #1e1b4b;
+      border: 1px solid #3730a3;
+      border-radius: 6px;
+      padding: 1px 7px;
+      margin-left: 6px;
+      vertical-align: middle;
+      letter-spacing: 0.04em;
+    }
+    .chord-function-badge.fn-nondiatonic {
+      color: #fcd34d;
+      background: #1c1008;
+      border-color: #92400e;
+    }
+    .scale-suggestion {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+    .scale-suggestion .ss-label { color: #4b5563; }
+    .scale-suggestion .ss-item {
+      color: #34d399;
+      font-weight: 600;
+    }
+    .scale-suggestion .ss-item.ss-chromatic { color: #f87171; }
+
+    /* ── Lick Library ── */
+    .lick-card {
+      background: #0f1117;
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      padding: 12px 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 280px;
+      flex-shrink: 0;
+    }
+    .lick-card:hover { border-color: #374151; }
+    .lick-card .lick-header {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .lick-card .lick-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #e5e7eb;
+    }
+    .lick-card .lick-style {
+      font-size: 10px;
+      color: #6b7280;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .lick-card .lick-difficulty {
+      margin-left: auto;
+      font-size: 11px;
+      color: #d97706;
+    }
+    .lick-card .lick-desc {
+      font-size: 11px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+    .lick-card .lick-category-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+    .lick-cat-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .lick-cat-minor  { background:#1a1208; color:#d97706; border:1px solid #92400e80; }
+    .lick-cat-major  { background:#0c1a14; color:#34d399; border:1px solid #065f4680; }
+    .lick-cat-dom7   { background:#1a0c0c; color:#f87171; border:1px solid #7f1d1d80; }
+    .lick-cat-dim    { background:#140c1a; color:#c084fc; border:1px solid #6b21a880; }
+    .lick-cat-nond   { background:#1c1008; color:#fbbf24; border:1px solid #78350f80; }
+    .lick-panel-wrap {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .lick-key-hint {
+      font-size: 10px;
+      color: #4b5563;
+      margin-top: 4px;
+    }
+

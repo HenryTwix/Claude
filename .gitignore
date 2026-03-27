@@ -1,0 +1,21 @@
+# Media files (large binaries)
+MIDI/
+video/
+
+# Manual backups (git replaces this)
+backup/
+
+# Separate Next.js project (has its own .git)
+chord-sync-next/
+
+# Claude Code local settings
+.claude/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Editor
+*.swp
+*.swo
+*~

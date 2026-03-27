@@ -1,0 +1,160 @@
+  /* ── Toggle Group Divider ── */
+  .toggle-divider {
+    width: 1px;
+    height: 22px;
+    background: var(--border-mid);
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  /* ── Shortcut Key Badge ── */
+  .sk-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 14px; height: 14px;
+    font-family: var(--font-mono);
+    font-size: 7px;
+    font-weight: 700;
+    color: #44445a;
+    background: #12121c;
+    border: 1px solid #1e1e30;
+    border-radius: 3px;
+    margin-left: 3px;
+    line-height: 1;
+    vertical-align: middle;
+    padding: 0 2px;
+  }
+  button.toggle-on .sk-badge { color: inherit; opacity: 0.45; }
+
+  /* ── Practice Loop Controls ── */
+  .loop-marker-btn {
+    font-family: var(--font-ui) !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    letter-spacing: 0.06em !important;
+    padding: 3px 10px !important;
+    border-radius: 6px !important;
+    border: 1px solid var(--border-mid) !important;
+    background: #0e0e18 !important;
+    color: var(--text-lo) !important;
+    cursor: pointer;
+    transition: all 0.15s !important;
+  }
+  .loop-marker-btn:hover {
+    border-color: #3a3a55 !important;
+    color: var(--text-mid) !important;
+  }
+  .loop-marker-btn.loop-set {
+    background: #1a0a2e !important;
+    border-color: #7c3aed !important;
+    color: #c4b5fd !important;
+  }
+  #loop-toggle-btn {
+    font-family: var(--font-ui) !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    letter-spacing: 0.06em !important;
+    padding: 3px 12px !important;
+    border-radius: 6px !important;
+    border: 1px solid var(--border-mid) !important;
+    background: #0e0e18 !important;
+    color: var(--text-lo) !important;
+    cursor: pointer;
+    transition: all 0.15s !important;
+  }
+  #loop-toggle-btn.loop-on {
+    background: #1a0a2e !important;
+    border-color: #a855f7 !important;
+    color: #e9d5ff !important;
+    box-shadow: 0 0 12px rgba(168,85,247,0.25) !important;
+  }
+  .loop-time-display {
+    font-family: var(--font-mono) !important;
+    font-size: 10px;
+    color: var(--text-lo);
+  }
+  .loop-speed-btn {
+    font-family: var(--font-mono) !important;
+    font-size: 10px !important;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border) !important;
+    background: transparent;
+    color: var(--text-lo);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .loop-speed-btn:hover { color: var(--text-mid); border-color: var(--border-mid) !important; }
+  .loop-speed-btn.speed-active {
+    background: #1a0a2e !important;
+    border-color: #a855f7 !important;
+    color: #e9d5ff !important;
+  }
+
+  /* ── Keyboard Shortcuts Overlay ── */
+  #shortcut-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+  }
+  #shortcut-overlay:not(.hidden) {
+    display: flex;
+  }
+  .sh-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius-card);
+    padding: 24px 28px;
+    max-width: 560px;
+    width: 92vw;
+    box-shadow: var(--shadow-card);
+  }
+  .sh-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0.1em;
+    color: var(--text-hi);
+    margin-bottom: 14px;
+  }
+  .sh-grid {
+    display: grid;
+    grid-template-columns: 70px 1fr 70px 1fr;
+    gap: 5px 12px;
+    align-items: center;
+  }
+  .sh-key {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: #818cf8;
+    background: #1e1b4b;
+    border: 1px solid #3730a3;
+    border-radius: 4px;
+    padding: 2px 0;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .sh-desc {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--text-mid);
+  }
+  .sh-section {
+    grid-column: 1 / -1;
+    font-family: var(--font-ui);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-lo);
+    margin-top: 8px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sh-section:first-child { margin-top: 0; }

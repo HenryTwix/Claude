@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chord Sync</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tonejs/midi@2.0.28/build/Midi.js"></script>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/fretboard.css">
+  <link rel="stylesheet" href="css/controls.css">
+  <link rel="stylesheet" href="css/panels.css">
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col items-center p-6 gap-5">
+
+  <h1 class="app-title text-center mt-2">Chord<span> Sync</span></h1>
+
+  <!-- MIDI Upload -->
+  <section class="cs-card w-full max-w-3xl bg-gray-900 rounded-2xl p-5 flex flex-col gap-3">
+    <h2 class="cs-h2 text-sm font-semibold text-gray-400 uppercase tracking-widest">MIDI 파일</h2>
+    <label
+      id="drop-zone"
+      class="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-gray-700 rounded-xl p-8 cursor-pointer hover:border-indigo-500 transition-colors"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm12 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+      </svg>
+      <span class="text-gray-400 text-sm">클릭하거나 .mid 파일을 드래그하세요</span>
+      <input id="midi-input" type="file" accept=".mid,.midi" class="hidden" />
+    </label>
+    <p id="midi-status" class="text-xs text-gray-500 text-center hidden"></p>
+  </section>
+
+  <!-- History -->
+  <section id="history-section" class="cs-card w-full max-w-3xl bg-gray-900 rounded-2xl p-4 flex flex-col gap-2">
+    <div class="flex items-center justify-between">
+      <h2 class="cs-h2 text-sm font-semibold text-gray-400 uppercase tracking-widest">최근 기록</h2>
+      <button id="history-clear" class="text-xs text-gray-600 hover:text-red-400 transition-colors hidden">전체 삭제</button>
+    </div>
+    <div id="history-list" class="flex flex-col gap-2">
+      <span class="text-xs text-gray-600">아직 기록이 없습니다</span>
+    </div>
+  </section>
+
+  <!-- YouTube URL / Local Video -->
+  <section class="cs-card w-full max-w-3xl bg-gray-900 rounded-2xl p-5 flex flex-col gap-3">
+    <div class="flex items-center gap-3">
+      <h2 class="cs-h2 text-sm font-semibold text-gray-400 uppercase tracking-widest">영상</h2>
+      <div class="flex rounded-lg overflow-hidden border border-gray-700 text-xs font-medium">
+        <button id="tab-youtube" class="px-3 py-1 bg-indigo-600 text-white transition-colors">YouTube</button>
+        <button id="tab-local" class="px-3 py-1 bg-gray-800 text-gray-400 hover:text-gray-200 transition-colors">로컬 파일</button>
+      </div>
+    </div>
+
+    <!-- YouTube panel -->
+    <div id="panel-youtube" class="flex gap-2">
+      <input
+        id="yt-url"
+        type="text"
+        placeholder="YouTube URL 또는 영상 ID"
+        class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-indigo-500 placeholder-gray-600"
+      />
+      <button
+        id="yt-load"
+        class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-5 py-2 rounded-lg transition-colors"
+      >
+        불러오기
+      </button>
+    </div>
+
+    <!-- Local file panel -->
+    <div id="panel-local" class="hidden">
+      <label id="video-drop-zone"
+        class="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-gray-700 rounded-xl p-6 cursor-pointer hover:border-indigo-500 transition-colors text-gray-500 hover:text-gray-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M15 10l4.553-2.276A1 1 0 0121 8.723v6.554a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
+        </svg>
+        <span class="text-sm">영상 파일을 클릭하거나 드래그해서 업로드</span>
+        <span class="text-xs text-gray-600">mp4, webm, mkv, mov 등 지원</span>
+        <input id="video-input" type="file" accept="video/*" class="hidden" />
+      </label>
+      <p id="video-filename" class="text-xs text-gray-500 text-center hidden mt-1"></p>
+    </div>
+
+    <!-- YouTube player -->
+    <div id="yt-player-wrap" class="hidden rounded-xl overflow-hidden aspect-video bg-black">
+      <div id="yt-player"></div>
+    </div>
+
+    <!-- Local video player -->
+    <video id="local-video" class="hidden w-full rounded-xl bg-black" controls></video>
+  </section>
+
+  <!-- MIDI Info -->
+  <section id="midi-info" class="cs-card w-full max-w-3xl bg-gray-900 rounded-2xl p-5 hidden">
+    <h2 class="cs-h2 text-sm font-semibold text-gray-400 uppercase tracking-widest mb-3">MIDI 정보</h2>
+    <div id="midi-info-body" class="text-sm text-gray-300 space-y-1"></div>
+  </section>
+
+  <!-- ── Controls ── -->
+  <section class="cs-card w-full max-w-7xl bg-gray-900 rounded-2xl p-5">
+    <div class="flex flex-col gap-4">
+
+      <!-- Row 1: Master Key + Sync Offset -->
+      <div class="flex flex-wrap items-center gap-4 pb-4 border-b border-gray-800">
+        <!-- Master Key -->
+        <div class="flex items-center gap-2">
+          <label class="text-xs font-semibold text-amber-400 uppercase tracking-widest">Master Key</label>
+          <select id="master-key-root"
+            class="bg-gray-800 border border-amber-800 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-amber-500 text-amber-200">
+          </select>
+          <select id="master-key-mode"
+            class="bg-gray-800 border border-amber-800 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-amber-500 text-amber-200">
+            <option value="Major">Major</option>
+            <option value="Minor">Minor</option>
+          </select>
+        </div>
+
+        <!-- Sync Offset -->
+        <div class="flex items-center gap-2">
+          <label class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Sync Offset</label>
+          <input type="range" id="sync-offset" min="-500" max="500" value="0" step="10"
+            class="w-32 accent-indigo-500 cursor-pointer" />
+          <span id="sync-offset-val" class="text-xs text-gray-300 w-16 text-right font-mono">0 ms</span>
+        </div>
+
+        <!-- Diatonic notes preview -->
+        <div class="ml-auto">
+          <span class="text-xs text-gray-500">다이아토닉: </span>
+          <span id="diatonic-preview" class="text-xs text-amber-300 font-mono"></span>
+        </div>
+      </div>
+
+      <!-- Row 1.5: Practice Loop -->
+      <div class="flex flex-wrap items-center gap-3 pb-4 border-b border-gray-800">
+        <label class="text-xs font-semibold text-purple-400 uppercase tracking-widest" style="font-family:var(--font-ui);letter-spacing:0.15em">Practice Loop</label>
+        <button id="loop-a-btn" class="loop-marker-btn" title="구간 시작점 설정 (A)">A<span class="sk-badge">A</span></button>
+        <span id="loop-a-time" class="loop-time-display">--:--</span>
+        <button id="loop-b-btn" class="loop-marker-btn" title="구간 끝점 설정 (B)">B<span class="sk-badge">B</span></button>
+        <span id="loop-b-time" class="loop-time-display">--:--</span>
+        <button id="loop-toggle-btn" title="구간 반복 켜기/끄기 (L)">LOOP<span class="sk-badge">L</span></button>
+        <button id="loop-clear-btn" class="loop-marker-btn" title="구간 초기화" style="font-size:10px!important;color:#ef4444!important;border-color:transparent!important;background:transparent!important">CLEAR</button>
+        <div class="toggle-divider"></div>
+        <span class="text-xs font-semibold uppercase tracking-widest" style="font-family:var(--font-ui);color:var(--text-lo);letter-spacing:0.12em;font-size:9px">Speed</span>
+        <button class="loop-speed-btn" data-speed="0.5">0.5x</button>
+        <button class="loop-speed-btn" data-speed="0.75">0.75x</button>
+        <button class="loop-speed-btn speed-active" data-speed="1">1x</button>
+      </div>
+
+      <!-- Row 2: Legend + Toggles (Grouped) -->
+      <div class="flex flex-wrap items-center gap-3">
+
+        <!-- Legend -->
+        <div class="flex items-center gap-3 text-xs text-gray-400">
+          <span class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-full bg-red-600 inline-block"></span>근음
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-full inline-block"
+              style="background:#14532d;border:1px solid #22c55a60;box-shadow:0 0 5px #22c55a55"></span>코드톤
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-full bg-blue-950 border border-blue-700 inline-block"></span>다이아토닉
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-full inline-block"
+              style="background:#92400e;border:1px solid #f59e0b80;box-shadow:0 0 6px #f59e0b66"></span>논-다이아
+          </span>
+        </div>
+
+        <div class="toggle-divider"></div>
+
+        <!-- Group: Display Mode -->
+        <button id="label-toggle"
+          class="px-3 py-1.5 rounded-lg border text-xs font-bold uppercase tracking-widest transition-colors
+                 bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400">
+          <span id="label-toggle-text">도수</span><span class="sk-badge">1</span>
+        </button>
+        <button id="penta-toggle"
+          class="px-3 py-1.5 rounded-lg border text-xs font-bold uppercase tracking-widest transition-colors
+                 bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400">
+          Penta<span class="sk-badge">2</span>
+        </button>
+        <button id="with-penta-toggle"
+          class="px-3 py-1.5 rounded-lg border text-xs font-bold uppercase tracking-widest transition-colors
+                 bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400"
+          title="펜타토닉 음을 강조하면서 다이아토닉 스케일 전체를 함께 표시">
+          W-Penta<span class="sk-badge">3</span>
+        </button>
+        <button id="chord-only-toggle"
+          class="px-3 py-1.5 rounded-lg border text-xs font-bold uppercase tracking-widest transition-colors
+                 bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400">
+          Chord<span class="sk-badge">4</span>
+        </button>
+        <button id="gray-toggle"
+          class="px-3 py-1.5 rounded-lg border text-xs font-bold uppercase tracking-widest transition-colors
+                 bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400">
+          Gray<span class="sk-badge">5</span>
+        </button>
+
+        <div class="toggle-divider"></div>
+
+        <!-- Group: Analysis -->
+        <button id="pre-nond-toggle"
+          class="px-3 py-1.5 rounded-lg border text-xs font-bold uppercase tracking-widest transition-colors
+                 bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400">
+          PreND<span class="sk-badge">6</span>
+        </button>
+        <button id="approach-toggle"
+          class="px-3 py-1.5 rounded-lg border text-xs font-bold uppercase tracking-widest transition-colors
+                 bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400"
+          title="코드톤 반음 아래 크로매틱 어프로치 노트를 지판에 표시">
+          Appr<span class="sk-badge">7</span>
+        </button>
+        <button id="next-fb-toggle"
+          class="px-3 py-1.5 rounded-lg border text-xs font-bold uppercase tracking-widest transition-colors
+                 bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400">
+          Next<span class="sk-badge">8</span>
+        </button>
+
+        <div class="toggle-divider"></div>
+
+        <!-- Group: Panels -->
+        <button id="improv-toggle"
+          class="px-3 py-1.5 rounded-lg border text-xs font-bold uppercase tracking-widest transition-colors
+                 bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400">
+          Improv<span class="sk-badge">9</span>
+        </button>
+
+        <!-- Chord badge (manual mode indicator) -->
+        <div id="chord-badge"
+          class="ml-auto px-4 py-1.5 bg-indigo-900 border border-indigo-700 rounded-full text-sm font-bold text-indigo-200">
+          C Major
+        </div>
+
+        <!-- Shortcut help button -->
+        <button id="shortcut-help-btn"
+          class="px-2 py-1 rounded-lg border text-xs font-bold transition-colors bg-gray-800 border-gray-600 text-gray-500 hover:border-gray-400 hover:text-gray-300"
+          title="키보드 단축키 보기 (?)" style="font-family:var(--font-mono)">?</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Now Playing ── -->
+  <section class="cs-card w-full max-w-7xl bg-gray-900 rounded-2xl p-5" style="min-height:110px">
+    <div class="flex items-start gap-8">
+      <!-- Chord name -->
+      <div class="flex flex-col gap-1 min-w-40">
+        <div class="flex items-center gap-2">
+          <span class="now-playing-label text-xs text-gray-500 uppercase tracking-widest">Now Playing</span>
+          <span id="sync-indicator" class="hidden w-2 h-2 rounded-full bg-green-400 sync-active"></span>
+        </div>
+        <span id="chord-name-display"
+          class="text-5xl font-black tracking-tight text-white leading-none mt-1">—</span>
+      </div>
+
+      <!-- Upcoming chords preview (Now Playing 바로 옆) -->
+      <div class="flex flex-col gap-1 pt-1">
+        <span class="text-xs text-gray-600 uppercase tracking-widest">Next</span>
+        <div id="upcoming-chords"></div>
+      </div>
+
+      <!-- Analysis info (고정 높이로 레이아웃 시프트 방지) -->
+      <div class="flex flex-col gap-2 pt-1 ml-auto" style="min-height:72px">
+        <div id="nondiatonic-info"
+          class="invisible text-sm font-semibold text-amber-400 bg-amber-950 border border-amber-800 rounded-lg px-3 py-1.5">
+        </div>
+        <div id="chord-tones-info" class="text-xs text-gray-500"></div>
+        <div id="scale-suggestion" class="scale-suggestion hidden"></div>
+        <div id="sync-mode-label" class="text-xs text-gray-600 uppercase tracking-widest">Manual Mode</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Chord Voicings + Arpeggio TAB ── -->
+  <section id="improv-tools" class="cs-card w-full max-w-7xl bg-gray-900 rounded-2xl p-5 hidden">
+    <div class="flex flex-col gap-4">
+      <!-- Header + Tabs -->
+      <div class="flex items-center gap-3">
+        <h2 class="cs-h2 text-xs font-semibold text-indigo-400 uppercase tracking-widest">Improvisation Tools</h2>
+        <div class="flex rounded-lg overflow-hidden border border-gray-700 text-xs font-medium ml-auto">
+          <button id="improv-tab-timeline" class="px-3 py-1 bg-indigo-600 text-white transition-colors">타임라인</button>
+          <button id="improv-tab-voicing" class="px-3 py-1 bg-gray-800 text-gray-400 hover:text-gray-200 transition-colors">운지표</button>
+          <button id="improv-tab-arpeggio" class="px-3 py-1 bg-gray-800 text-gray-400 hover:text-gray-200 transition-colors">아르페지오</button>
+          <button id="improv-tab-both" class="px-3 py-1 bg-gray-800 text-gray-400 hover:text-gray-200 transition-colors">모두</button>
+          <button id="improv-tab-lick" class="px-3 py-1 bg-gray-800 text-gray-400 hover:text-gray-200 transition-colors">릭 라이브러리</button>
+        </div>
+      </div>
+
+      <!-- ── Timeline Panel ── -->
+      <div id="timeline-panel">
+        <div id="chord-timeline" class="flex items-stretch gap-3 overflow-x-auto pb-2"></div>
+      </div>
+
+      <!-- Voicing Diagrams -->
+      <div id="voicing-panel" class="hidden flex gap-3 overflow-x-auto pb-1"></div>
+
+      <!-- Lick Library -->
+      <div id="lick-panel" class="hidden">
+        <div id="lick-panel-content" class="lick-panel-wrap"></div>
+        <div id="lick-key-hint" class="lick-key-hint"></div>
+      </div>
+
+      <!-- Arpeggio TAB -->
+      <div id="arpeggio-panel" class="hidden">
+        <div id="arp-tab-content" class="arp-tab"></div>
+        <div class="flex gap-3 mt-2">
+          <button id="arp-pattern-prev" class="text-xs text-gray-500 hover:text-gray-300 px-2 py-1 bg-gray-800 rounded">&#9664; 이전 패턴</button>
+          <span id="arp-pattern-name" class="text-xs text-indigo-400 font-medium py-1"></span>
+          <button id="arp-pattern-next" class="text-xs text-gray-500 hover:text-gray-300 px-2 py-1 bg-gray-800 rounded">다음 패턴 &#9654;</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Fretboard (Current Chord) ── -->
+  <section class="cs-card w-full max-w-7xl bg-gray-900 rounded-2xl p-5">
+    <div class="overflow-x-auto" style="position:relative">
+      <div id="pos-zone" class="pos-zone hidden"><span class="pos-zone-label"></span></div>
+      <div id="fretboard"></div>
+    </div>
+  </section>
+
+  <!-- ── Fretboard (Next Chord) ── -->
+  <section id="fretboard2-section" class="cs-card w-full max-w-7xl bg-gray-900 rounded-2xl p-5 hidden">
+    <div class="flex items-center gap-3 mb-2">
+      <span class="text-xs text-gray-600 uppercase tracking-widest">Next Chord</span>
+      <span id="next-chord-label" class="text-lg font-bold text-gray-500">—</span>
+    </div>
+    <div class="overflow-x-auto opacity-60">
+      <div id="fretboard2"></div>
+    </div>
+  </section>
+
+  <!-- ── Song Map ── -->
+  <section id="song-map-section" class="cs-card w-full max-w-7xl bg-gray-900 rounded-2xl p-5">
+    <div class="flex items-center gap-3">
+      <button id="song-map-toggle"
+        class="px-4 py-1.5 rounded-lg border text-xs font-bold uppercase tracking-widest transition-colors
+               bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400">
+        ▶ Song Map
+      </button>
+      <div id="song-map-stats" class="sc-stats hidden"></div>
+    </div>
+    <div id="song-map-panel" class="hidden mt-4">
+      <div id="song-map-content" class="flex flex-col gap-3"></div>
+    </div>
+  </section>
+
+  <!-- Keyboard Shortcuts Overlay -->
+  <div id="shortcut-overlay" class="hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+    <div class="sh-panel">
+      <div class="sh-title">Keyboard Shortcuts</div>
+      <div class="sh-grid">
+        <div class="sh-section">재생 컨트롤</div>
+        <div class="sh-key">Space</div><div class="sh-desc">재생 / 일시정지</div>
+        <div class="sh-key">&larr; / &rarr;</div><div class="sh-desc">이전 / 다음 코드로 점프</div>
+
+        <div class="sh-section">표시 모드</div>
+        <div class="sh-key">1</div><div class="sh-desc">도수 / 음계 전환</div>
+        <div class="sh-key">2</div><div class="sh-desc">펜타토닉 모드</div>
+        <div class="sh-key">3</div><div class="sh-desc">WITH-PENTA 모드</div>
+        <div class="sh-key">4</div><div class="sh-desc">코드톤만 표시</div>
+        <div class="sh-key">5</div><div class="sh-desc">Gray 모드</div>
+        <div class="sh-key">6</div><div class="sh-desc">Pre NonD 미리보기</div>
+
+        <div class="sh-section">분석 & 패널</div>
+        <div class="sh-key">7</div><div class="sh-desc">어프로치 노트</div>
+        <div class="sh-key">8</div><div class="sh-desc">다음 코드 지판</div>
+        <div class="sh-key">9</div><div class="sh-desc">Improv Tools</div>
+        <div class="sh-key">0</div><div class="sh-desc">Song Map</div>
+
+        <div class="sh-section">Practice Loop</div>
+        <div class="sh-key">A</div><div class="sh-desc">구간 시작점(A) 설정</div>
+        <div class="sh-key">B</div><div class="sh-desc">구간 끝점(B) 설정</div>
+        <div class="sh-key">L</div><div class="sh-desc">루프 켜기/끄기</div>
+        <div class="sh-key">X</div><div class="sh-desc">루프 구간 초기화</div>
+
+        <div class="sh-section">기타</div>
+        <div class="sh-key">?</div><div class="sh-desc">이 도움말 표시/닫기</div>
+        <div class="sh-key">Esc</div><div class="sh-desc">오버레이 닫기</div>
+      </div>
+      <p style="font-family:var(--font-ui);font-size:11px;color:var(--text-lo);margin-top:14px;text-align:center">
+        입력란에 포커스가 있을 때는 단축키가 비활성화됩니다
+      </p>
+    </div>
+  </div>
+
+
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    // Bridge: capture YT API ready event for ES module consumption
+    window.__ytAPIReadyPromise = new Promise(resolve => {
+      window.onYouTubeIframeAPIReady = resolve;
+    });
+  </script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
