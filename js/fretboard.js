@@ -1,6 +1,7 @@
 import { OPEN_NOTES, STR_LABELS, STR_STYLE, TOTAL_FRETS, INLAY_SINGLE, INLAY_DOUBLE,
          NOTE_NAMES, SCALES, CHORD_IV_LABELS, PENTA_MAJOR, PENTA_MINOR, S } from './state.js';
 import { getDiatonicSet } from './theory.js';
+import { pickBestVoicing } from './voicing.js';
 
 let fbCells  = [];
 let fbCells2 = [];
@@ -161,11 +162,45 @@ export function _renderCells(cells, chordInfoParam, ghostPCSet = null) {
   }
 }
 
+function _renderVoicingCells(cells, chordInfo) {
+  const { voicing } = pickBestVoicing(chordInfo.name, chordInfo.rootPc);
+  if (!voicing) { _renderCells(cells, chordInfo); return; }
+  const frets = voicing.frets;
+  for (let s = 0; s < 6; s++) {
+    for (let f = 0; f <= TOTAL_FRETS; f++) {
+      const cell = cells[s]?.[f];
+      if (!cell) continue;
+      let dotHtml = '';
+      if (f === 0) {
+        if (frets[s] === -1) dotHtml = '<div class="ndot vc-muted">\u00d7</div>';
+        else if (frets[s] === 0) {
+          const noteIdx = OPEN_NOTES[s] % 12;
+          const isRoot = noteIdx === chordInfo.rootPc;
+          const label = S.showNoteNames ? NOTE_NAMES[noteIdx]
+            : (isRoot ? 'R' : CHORD_IV_LABELS[(noteIdx - chordInfo.rootPc + 12) % 12]);
+          dotHtml = `<div class="ndot ${isRoot ? 'vc-root' : 'vc-open'}">${label}</div>`;
+        }
+      } else if (frets[s] === f) {
+        const noteIdx = (OPEN_NOTES[s] + f) % 12;
+        const isRoot = noteIdx === chordInfo.rootPc;
+        const label = S.showNoteNames ? NOTE_NAMES[noteIdx]
+          : (isRoot ? 'R' : CHORD_IV_LABELS[(noteIdx - chordInfo.rootPc + 12) % 12]);
+        dotHtml = `<div class="ndot ${isRoot ? 'vc-root' : 'vc-finger'}">${label}</div>`;
+      }
+      if (cell.innerHTML !== dotHtml) cell.innerHTML = dotHtml;
+    }
+  }
+}
+
 export function renderFretboard() {
   const inChordMode = S.chordMode && S.currentChordInfo;
   if (!inChordMode) {
     document.getElementById('chord-badge').textContent =
       `${S.masterKeyRoot} ${S.masterKeyMode === 'Minor' ? 'Natural Minor' : 'Major'}`;
+  }
+  if (S.improvChordMode && S.improvVisible && inChordMode) {
+    _renderVoicingCells(fbCells, S.currentChordInfo);
+    return;
   }
   let ghostPCSet = null;
   if (S.preNonDMode && inChordMode && S.nextChordInfo) {
@@ -202,7 +237,10 @@ export function renderNextFretboard(nextIdx) {
       ? 'text-lg font-bold text-amber-400'
       : 'text-lg font-bold text-gray-400';
   }
-  _renderCells(fbCells2, {
-    name: nextEv.chord.name, rootPc: nextEv.chord.rootPc, notePCs: nextEv.notePCs,
-  });
+  const nextChordInfo = { name: nextEv.chord.name, rootPc: nextEv.chord.rootPc, notePCs: nextEv.notePCs };
+  if (S.improvChordMode && S.improvVisible) {
+    _renderVoicingCells(fbCells2, nextChordInfo);
+    return;
+  }
+  _renderCells(fbCells2, nextChordInfo);
 }

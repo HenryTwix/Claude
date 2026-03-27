@@ -47,6 +47,7 @@ export function registerShortcutHandler() {
     };
     if (toggleMap[key]) { e.preventDefault(); document.getElementById(toggleMap[key])?.click(); return; }
     const lk = key.toLowerCase();
+    if (lk === 'v') { e.preventDefault(); document.getElementById('improv-chord-toggle')?.click(); return; }
     if (lk === 'a') { e.preventDefault(); setLoopA(); return; }
     if (lk === 'b') { e.preventDefault(); setLoopB(); return; }
     if (lk === 'l') { e.preventDefault(); toggleLoop(); return; }

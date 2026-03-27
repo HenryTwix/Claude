@@ -296,6 +296,10 @@
       <!-- Header + Tabs -->
       <div class="flex items-center gap-3">
         <h2 class="cs-h2 text-xs font-semibold text-indigo-400 uppercase tracking-widest">Improvisation Tools</h2>
+        <button id="improv-chord-toggle"
+          class="px-3 py-1.5 rounded-lg border text-xs font-bold uppercase tracking-widest transition-colors
+                 bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400"
+          title="지판에 코드 운지 표시 (V)">Voicing<span class="sk-badge">V</span></button>
         <div class="flex rounded-lg overflow-hidden border border-gray-700 text-xs font-medium ml-auto">
           <button id="improv-tab-timeline" class="px-3 py-1 bg-indigo-600 text-white transition-colors">타임라인</button>
           <button id="improv-tab-voicing" class="px-3 py-1 bg-gray-800 text-gray-400 hover:text-gray-200 transition-colors">운지표</button>
@@ -387,6 +391,7 @@
         <div class="sh-key">8</div><div class="sh-desc">다음 코드 지판</div>
         <div class="sh-key">9</div><div class="sh-desc">Improv Tools</div>
         <div class="sh-key">0</div><div class="sh-desc">Song Map</div>
+        <div class="sh-key">V</div><div class="sh-desc">운지 지판 표시</div>
 
         <div class="sh-section">Practice Loop</div>
         <div class="sh-key">A</div><div class="sh-desc">구간 시작점(A) 설정</div>

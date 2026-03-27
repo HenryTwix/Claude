@@ -100,6 +100,7 @@ export const S = {
   arpPatternIdx: 0,
   voicingPrefs: {},
   lastSelectedBaseFret: 5,
+  improvChordMode: false,
 
   loopA: -1,
   loopB: -1,

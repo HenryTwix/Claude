@@ -19,7 +19,10 @@ import { registerShortcutHandler } from './shortcuts.js';
 // ── Callback Bridges ──
 registerMediaCallbacks({ loadMidi, loadYoutube, loadLocalVideo });
 registerHistoryCallback(saveToHistory);
-onVoicingChange(() => { updateTimelinePanel(); updateVoicingPanel(); });
+onVoicingChange(() => {
+  updateTimelinePanel(); updateVoicingPanel();
+  if (S.improvChordMode && S.improvVisible) renderFretboard();
+});
 
 // ── Expose state for debugging ──
 window.S = S;
@@ -151,6 +154,11 @@ document.getElementById('improv-toggle').addEventListener('click', () => {
   document.getElementById('improv-tools').classList.toggle('hidden', !S.improvVisible);
   if (S.improvVisible) updateImprovTools();
   else document.getElementById('pos-zone')?.classList.add('hidden');
+});
+document.getElementById('improv-chord-toggle').addEventListener('click', () => {
+  S.improvChordMode = !S.improvChordMode;
+  document.getElementById('improv-chord-toggle').classList.toggle('toggle-on', S.improvChordMode);
+  renderFretboard();
 });
 document.getElementById('improv-tab-timeline').addEventListener('click', () => { setImprovTab('timeline'); updateTimelinePanel(); });
 document.getElementById('improv-tab-voicing').addEventListener('click', () => { setImprovTab('voicing'); updateVoicingPanel(); });

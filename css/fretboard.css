@@ -219,6 +219,31 @@
       border: 1px solid #27272a60;
     }
 
+    /* ── IMPROV-CHORD Voicing Overlay ── */
+    .ndot.vc-root {
+      background: #dc2626;
+      color: #fff;
+      box-shadow: 0 0 12px #dc262699;
+    }
+    .ndot.vc-finger {
+      background: #1e40af;
+      color: #93c5fd;
+      box-shadow: 0 0 8px #3b82f666;
+      border: 2px solid #3b82f6;
+    }
+    .ndot.vc-open {
+      background: transparent;
+      color: #9ca3af;
+      border: 2px solid #6b7280;
+    }
+    .ndot.vc-muted {
+      background: transparent;
+      color: #4b5563;
+      border: none;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
     /* ── Approach Notes ── */
     .ndot.approach {
       background: #1e1b4b;
