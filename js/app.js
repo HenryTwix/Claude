@@ -58,6 +58,22 @@ syncOffsetSlider.addEventListener('input', () => {
   S.lastEventTime = -1; S.currentEventIdx = -1;
 });
 
+// ── Fretboard Zoom ──
+const fbZoomSlider = document.getElementById('fb-zoom');
+const fbZoomVal    = document.getElementById('fb-zoom-val');
+const savedFbZoom  = localStorage.getItem('chordSyncFbZoom');
+if (savedFbZoom) fbZoomSlider.value = savedFbZoom;
+
+function applyFbZoom(val) {
+  const v = parseFloat(val);
+  document.getElementById('fb-inner')?.style.setProperty('zoom', v);
+  document.getElementById('fb2-inner')?.style.setProperty('zoom', v);
+  fbZoomVal.textContent = `${Math.round(v * 100)}%`;
+  localStorage.setItem('chordSyncFbZoom', val);
+}
+fbZoomSlider.addEventListener('input', () => applyFbZoom(fbZoomSlider.value));
+fbZoomVal.addEventListener('dblclick', () => { fbZoomSlider.value = 1; applyFbZoom(1); });
+
 // ── Toggle Buttons ──
 document.getElementById('label-toggle').addEventListener('click', () => {
   S.showNoteNames = !S.showNoteNames;
@@ -229,5 +245,6 @@ updateDiatonicPreview();
 buildFretboard();
 buildFretboard2();
 renderFretboard();
+applyFbZoom(fbZoomSlider.value);
 openHistoryDB().then(() => renderHistoryUI()).catch(() => renderHistoryUI());
 registerShortcutHandler();

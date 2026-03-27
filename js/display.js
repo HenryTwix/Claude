@@ -1,6 +1,19 @@
 import { NOTE_NAMES, S } from './state.js';
 import { getDiatonicSet, getDiatonicNames, getChordRomanNumeral, getScaleSuggestions } from './theory.js';
 
+export function updateBpmDisplay() {
+  const el = document.getElementById('bpm-display');
+  const valEl = document.getElementById('bpm-value');
+  if (!el || !valEl) return;
+  const bpm = S.midiData?.header?.tempos?.[0]?.bpm;
+  if (bpm != null) {
+    valEl.textContent = Math.round(bpm);
+    el.classList.remove('hidden');
+  } else {
+    el.classList.add('hidden');
+  }
+}
+
 export function updateDiatonicPreview() {
   document.getElementById('diatonic-preview').textContent =
     getDiatonicNames(S.masterKeyRoot, S.masterKeyMode).join('  ');

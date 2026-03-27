@@ -13,7 +13,7 @@ export function _buildFretboard(containerId, prefix) {
   const fretCols = Array.from({ length: TOTAL_FRETS },
     (_, i) => `${fretFlex(i + 1).toFixed(4)}fr`
   ).join(' ');
-  const gridCols = `28px 30px ${fretCols}`;
+  const gridCols = `32px 34px ${fretCols}`;
   const parts = [];
   parts.push(`<div id="${prefix}-inner" style="grid-template-columns:${gridCols}">`);
   parts.push('<div class="fb-slabel"></div>');

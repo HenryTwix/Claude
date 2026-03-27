@@ -84,3 +84,13 @@ state → theory → {fretboard, display, voicing, songmap} → improv → sync 
 
 ### 수동 모드 (chordMode = false)
 - `masterKeyRoot`/`masterKeyMode` 값을 그대로 사용, Minor → Natural Minor, Major → Major 스케일
+
+---
+
+## 자연어 커맨드 매핑
+
+사용자가 아래와 같은 표현을 사용하면 해당 슬래시 커맨드를 실행:
+
+| 트리거 표현 | 실행 |
+|-------------|------|
+| "깃푸쉬", "깃 푸쉬", "git push", "깃에 푸쉬해줘", "푸쉬해줘", "커밋하고 푸쉬" | `/push` |

@@ -330,6 +330,14 @@
   /* ── Sync offset value ── */
   #sync-offset-val { font-family: var(--font-mono) !important; }
 
+  /* ── Fretboard Zoom ── */
+  #fb-zoom-val {
+    font-family: var(--font-mono) !important;
+    cursor: pointer;
+    user-select: none;
+  }
+  #fb-zoom-val:hover { color: var(--accent-ind2) !important; }
+
   /* ── Chord tones info ── */
   #chord-tones-info { font-family: var(--font-ui) !important; }
   #chord-function-badge, .chord-function-badge {

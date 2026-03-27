@@ -2,7 +2,7 @@ import { S } from './state.js';
 import { identifyChord, extractChordEvents, detectKeyFromChords } from './theory.js';
 import { startSyncLoop, stopSyncLoop } from './sync.js';
 import { detectSongSections, buildSongMap, resetScActiveIdx } from './songmap.js';
-import { updateDiatonicPreview, syncToggleUI } from './display.js';
+import { updateDiatonicPreview, syncToggleUI, updateBpmDisplay } from './display.js';
 import { renderFretboard } from './fretboard.js';
 import { loadVoicingPrefs } from './voicing.js';
 
@@ -55,6 +55,7 @@ export async function loadMidi(file) {
       'text-green-400'
     );
     renderMidiInfo();
+    updateBpmDisplay();
     syncToggleUI();
     S.songSections = detectSongSections(S.midiChordEvents);
     resetScActiveIdx();

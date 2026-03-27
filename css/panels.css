@@ -28,6 +28,35 @@
       color: #d97706;
     }
 
+    /* ── BPM Badge ── */
+    .bpm-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 14px;
+      background: #0f1117;
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .bpm-label {
+      font-family: var(--font-ui);
+      font-size: 9px;
+      font-weight: 700;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+    .bpm-value {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 800;
+      color: #e5e7eb;
+      line-height: 1;
+    }
+
     /* ── Sync pulse animation ── */
     @keyframes syncPulse {
       0%, 100% { opacity: 1; }
