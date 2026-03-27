@@ -167,20 +167,23 @@ function _renderVoicingCells(cells, chordInfo) {
   if (!voicing) { _renderCells(cells, chordInfo); return; }
   const frets = voicing.frets;
   for (let s = 0; s < 6; s++) {
+    // voicing frets: [6th(E), 5th(A), 4th(D), 3rd(G), 2nd(B), 1st(e)]
+    // fretboard cells: s0=1st(e), s1=2nd(B), ... s5=6th(E)
+    const vf = frets[5 - s];
     for (let f = 0; f <= TOTAL_FRETS; f++) {
       const cell = cells[s]?.[f];
       if (!cell) continue;
       let dotHtml = '';
       if (f === 0) {
-        if (frets[s] === -1) dotHtml = '<div class="ndot vc-muted">\u00d7</div>';
-        else if (frets[s] === 0) {
+        if (vf === -1) dotHtml = '<div class="ndot vc-muted">\u00d7</div>';
+        else if (vf === 0) {
           const noteIdx = OPEN_NOTES[s] % 12;
           const isRoot = noteIdx === chordInfo.rootPc;
           const label = S.showNoteNames ? NOTE_NAMES[noteIdx]
             : (isRoot ? 'R' : CHORD_IV_LABELS[(noteIdx - chordInfo.rootPc + 12) % 12]);
           dotHtml = `<div class="ndot ${isRoot ? 'vc-root' : 'vc-open'}">${label}</div>`;
         }
-      } else if (frets[s] === f) {
+      } else if (vf === f) {
         const noteIdx = (OPEN_NOTES[s] + f) % 12;
         const isRoot = noteIdx === chordInfo.rootPc;
         const label = S.showNoteNames ? NOTE_NAMES[noteIdx]
