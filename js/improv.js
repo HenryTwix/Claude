@@ -167,9 +167,12 @@ export function updatePositionGuide() {
   const zone = document.getElementById('pos-zone');
   if (!zone || !S.improvVisible) { if (zone) zone.classList.add('hidden'); return; }
   if (!S.chordMode || !S.currentChordInfo) { zone.classList.add('hidden'); return; }
-  const rootFret6 = (S.currentChordInfo.rootPc - 4 + 12) % 12;
-  const posStart = rootFret6 === 0 ? 0 : Math.max(1, rootFret6 - 2);
-  const posEnd = posStart + 4;
+  const { voicing } = pickBestVoicing(S.currentChordInfo.name, S.currentChordInfo.rootPc);
+  if (!voicing) { zone.classList.add('hidden'); return; }
+  const playedFrets = voicing.frets.filter(f => f > 0);
+  if (!playedFrets.length) { zone.classList.add('hidden'); return; }
+  const posStart = Math.min(...playedFrets);
+  const posEnd = Math.max(...playedFrets);
   const fbInner = document.getElementById('fb-inner');
   const container = document.getElementById('fretboard')?.parentElement;
   if (!fbInner || !container) { zone.classList.add('hidden'); return; }
@@ -184,7 +187,7 @@ export function updatePositionGuide() {
   zone.style.left = (startRect.left - contRect.left + container.scrollLeft) + 'px';
   zone.style.width = (endRect.right - startRect.left) + 'px';
   zone.classList.remove('hidden');
-  zone.querySelector('.pos-zone-label').textContent = `Pos ${posStart === 0 ? 'Open' : posStart}`;
+  zone.querySelector('.pos-zone-label').textContent = posStart === 0 ? 'Open Pos' : `Fret ${posStart}–${posEnd}`;
 }
 
 export function updateTimelinePanel() {
