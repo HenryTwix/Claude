@@ -143,3 +143,39 @@ export function onPlayerStateChange(e) {
       e.data === window.YT.PlayerState.ENDED ? 'Ended' : 'Paused';
   }
 }
+
+// ═══════════════════════════════════════════════════════════
+// Chrome Extension Bridge — BroadcastChannel receiver
+// ═══════════════════════════════════════════════════════════
+
+const _bridge = new BroadcastChannel('chord-sync-bridge');
+_bridge.onmessage = async (e) => {
+  if (e.data?.type !== 'chord-sync-midi') return;
+  const { midi, filename, youtubeId } = e.data;
+  try {
+    // Load MIDI from ArrayBuffer
+    const blob = new Blob([midi], { type: 'audio/midi' });
+    const file = new File([blob], filename || 'chordify.mid', { type: 'audio/midi' });
+    await loadMidi(file);
+    showMidiStatus(
+      `🔗 ${filename} — 브라우저 확장에서 수신`,
+      'text-indigo-400'
+    );
+
+    // Auto-load YouTube video if ID provided
+    if (youtubeId) {
+      // Switch to YouTube tab
+      S.videoMode = 'youtube';
+      document.getElementById('tab-youtube').className = 'px-3 py-1 bg-indigo-600 text-white transition-colors';
+      document.getElementById('tab-local').className = 'px-3 py-1 bg-gray-800 text-gray-400 hover:text-gray-200 transition-colors';
+      document.getElementById('panel-youtube').classList.remove('hidden');
+      document.getElementById('panel-local').classList.add('hidden');
+
+      // Set URL and load
+      document.getElementById('yt-url').value = `https://www.youtube.com/watch?v=${youtubeId}`;
+      loadYoutube();
+    }
+  } catch (err) {
+    showMidiStatus(`확장 수신 오류: ${err.message}`, 'text-red-400');
+  }
+};
