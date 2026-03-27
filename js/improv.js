@@ -163,32 +163,6 @@ export function updateArpeggioPanel() {
   if (nameEl) nameEl.textContent = ARP_PATTERNS[S.arpPatternIdx % ARP_PATTERNS.length].name;
 }
 
-export function updatePositionGuide() {
-  const zone = document.getElementById('pos-zone');
-  if (!zone || !S.improvVisible) { if (zone) zone.classList.add('hidden'); return; }
-  if (!S.chordMode || !S.currentChordInfo) { zone.classList.add('hidden'); return; }
-  const { voicing } = pickBestVoicing(S.currentChordInfo.name, S.currentChordInfo.rootPc);
-  if (!voicing) { zone.classList.add('hidden'); return; }
-  const playedFrets = voicing.frets.filter(f => f > 0);
-  if (!playedFrets.length) { zone.classList.add('hidden'); return; }
-  const posStart = Math.min(...playedFrets);
-  const posEnd = Math.max(...playedFrets);
-  const fbInner = document.getElementById('fb-inner');
-  const container = document.getElementById('fretboard')?.parentElement;
-  if (!fbInner || !container) { zone.classList.add('hidden'); return; }
-  const sIdx = posStart === 0 ? 2 : posStart + 1;
-  const eIdx = posEnd + 1;
-  const startCell = fbInner.children[sIdx];
-  const endCell   = fbInner.children[eIdx];
-  if (!startCell || !endCell) { zone.classList.add('hidden'); return; }
-  const contRect = container.getBoundingClientRect();
-  const startRect = startCell.getBoundingClientRect();
-  const endRect = endCell.getBoundingClientRect();
-  zone.style.left = (startRect.left - contRect.left + container.scrollLeft) + 'px';
-  zone.style.width = (endRect.right - startRect.left) + 'px';
-  zone.classList.remove('hidden');
-  zone.querySelector('.pos-zone-label').textContent = posStart === 0 ? 'Open Pos' : `Fret ${posStart}–${posEnd}`;
-}
 
 export function updateTimelinePanel() {
   const container = document.getElementById('chord-timeline');
@@ -278,7 +252,6 @@ export function updateImprovTools() {
   if (S.improvTab === 'voicing' || S.improvTab === 'both') updateVoicingPanel();
   if (S.improvTab === 'arpeggio' || S.improvTab === 'both') updateArpeggioPanel();
   if (S.improvTab === 'lick') updateLickPanel();
-  updatePositionGuide();
 }
 
 export function prevArpPattern() { S.arpPatternIdx = (S.arpPatternIdx - 1 + ARP_PATTERNS.length) % ARP_PATTERNS.length; }

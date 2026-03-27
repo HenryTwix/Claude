@@ -159,29 +159,6 @@
     .arp-tab .arp-highlight { color: #fbbf24; font-weight: bold; }
     .arp-tab .arp-root { color: #f87171; font-weight: bold; }
 
-    /* ── Position Guide overlay on fretboard ── */
-    .pos-zone {
-      position: absolute;
-      top: 0; bottom: 0;
-      background: rgba(99, 102, 241, 0.08);
-      border-left: 2px solid rgba(99, 102, 241, 0.35);
-      border-right: 2px solid rgba(99, 102, 241, 0.35);
-      border-radius: 6px;
-      pointer-events: none;
-      transition: left 0.3s, width 0.3s;
-      z-index: 1;
-    }
-    .pos-zone-label {
-      position: absolute;
-      top: -18px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 9px;
-      color: rgba(129, 140, 248, 0.7);
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
     /* ── History ── */
     .history-item {
       display: flex;

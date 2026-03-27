@@ -153,7 +153,6 @@ document.getElementById('improv-toggle').addEventListener('click', () => {
   document.getElementById('improv-toggle').classList.toggle('toggle-on', S.improvVisible);
   document.getElementById('improv-tools').classList.toggle('hidden', !S.improvVisible);
   if (S.improvVisible) updateImprovTools();
-  else document.getElementById('pos-zone')?.classList.add('hidden');
 });
 document.getElementById('improv-chord-toggle').addEventListener('click', () => {
   S.improvChordMode = !S.improvChordMode;
