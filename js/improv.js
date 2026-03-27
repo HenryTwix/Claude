@@ -173,10 +173,10 @@ export function updateTimelinePanel() {
   }
   const diatonicSet = getDiatonicSet(S.masterKeyRoot, S.masterKeyMode);
   const curIdx = S.currentEventIdx;
-  const slots = [{ info: S.currentChordInfo, isCurrent: true }];
+  const slots = [{ info: S.currentChordInfo, isCurrent: true, evIdx: -1 }];
   for (let i = 1; i <= 4; i++) {
     const ev = curIdx >= 0 ? S.midiChordEvents[curIdx + i] : null;
-    if (ev?.chord) slots.push({ info: { name:ev.chord.name, rootPc:ev.chord.rootPc, notePCs:ev.notePCs }, isCurrent: false });
+    if (ev?.chord) slots.push({ info: { name:ev.chord.name, rootPc:ev.chord.rootPc, notePCs:ev.notePCs }, isCurrent: false, evIdx: curIdx + i });
   }
   const opacities = [1, 0.72, 0.52, 0.35, 0.22];
   container.innerHTML = slots.map((slot, i) => {
@@ -190,7 +190,7 @@ export function updateTimelinePanel() {
     const rn = getChordRomanNumeral(info.rootPc, suffix);
     const rnHtml = `<span style="font-size:10px;font-weight:700;color:${isNonDia?'#d97706':'#6366f1'};
       background:${isNonDia?'#1c1008':'#1e1b4b'};border-radius:4px;padding:1px 5px;letter-spacing:0.04em;">${rn}</span>`;
-    const idxAttr = !isCurrent && curIdx >= 0 ? ` data-sc-idx="${curIdx + i}"` : '';
+    const idxAttr = !isCurrent && slot.evIdx >= 0 ? ` data-sc-idx="${slot.evIdx}"` : '';
     return `<div class="tl-card ${isCurrent?'tl-current':''} ${isNonDia?'tl-nondiatonic':''}" style="opacity:${opacities[i]};${!isCurrent?'cursor:pointer':''}"${idxAttr}>
       <span class="tl-badge">NOW</span>
       <span class="tl-name" style="color:${isNonDia?(isCurrent?'#fbbf24':'#d97706'):''}">${info.name}</span>
